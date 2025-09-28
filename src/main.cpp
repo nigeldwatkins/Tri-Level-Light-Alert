@@ -1,41 +1,51 @@
 #include <Arduino.h>
+#include <LiquidCrystal.h>
 
-// put function declarations here:
-const int redPin = 11;
-const int greenPin = 8;
-const int bluePin = 7;
+// RGB LED pins
+const int redPin = 10;
+const int greenPin = 9;
+const int bluePin = 6;
+
+// Photocell pin
+const int photoPin = A0; 
+
+int lightLevel = 0; // stores analog reading
+
+// Thresholds (adjust based on your setup)
+const int lowThreshold = 200;
+const int highThreshold = 800;
 
 void setup() {
-  // put your setup code here, to run once:
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
-  Serial.begin(9600); // debugging / LCD
+
+  pinMode(photoPin, INPUT);
+
+  Serial.begin(9600); // for debugging
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  // Red
-  digitalWrite(redPin, HIGH);
-  digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, LOW);
-  delay(1000); // 1 second
+  // Read the light level
+  lightLevel = analogRead(photoPin);
+  Serial.println(lightLevel);
 
-  // Green
-  digitalWrite(redPin, LOW);
-  digitalWrite(greenPin, HIGH);
-  digitalWrite(bluePin, LOW);
-  delay(1000);
-
-  // Blue
+  // Reset all LEDs
   digitalWrite(redPin, LOW);
   digitalWrite(greenPin, LOW);
-  digitalWrite(bluePin, HIGH);
-  delay(1000);
-  
+  digitalWrite(bluePin, LOW);
+
+  // Check the light level and turn on the corresponding LED
+  if (lightLevel < lowThreshold) {
+    digitalWrite(redPin, HIGH); // LOW light
+  } 
+  else if (lightLevel >= lowThreshold && lightLevel <= highThreshold) {
+    digitalWrite(greenPin, HIGH); // NORMAL light
+  } 
+  else {
+    digitalWrite(bluePin, HIGH); // HIGH light
+  }
+
+  delay(500); // update twice per second
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
