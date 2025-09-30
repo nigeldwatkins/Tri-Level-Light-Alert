@@ -11,7 +11,7 @@ const int photoPin = A0;
 
 int lightLevel = 0; // stores analog reading
 
-// Thresholds (adjust based on your setup)
+// Thresholds 
 const int lowThreshold = 200;
 const int highThreshold = 800;
 
